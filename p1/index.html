@@ -1,0 +1,316 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+
+  <title>CS 452 project 1</title>
+
+  <link rel="stylesheet" href="css/styles.css?v=1.0">
+
+</head>
+
+<body onload="draw()">
+<h1 align="center"><p class="title">Team Scallywags pt 1</p></h1>
+<p align="center" class="title"> Part: | <a href="http://projects.cse.tamu.edu/jr1/Robotics/p1/">1</a> | <a href="http://projects.cse.tamu.edu/jr1/Robotics/">2</a>  |</p>
+  <div id="draw-area">
+    <canvas id="Canvas" width="800" height="450" style="border: 1px solid #000000;">
+    </canvas>
+
+  </div>
+
+
+
+  <script>
+
+    var theta1=-Math.PI/2;
+    var theta2=Math.PI/2;
+    var theta3=-Math.PI/2;
+
+    var increment = Math.PI/36;
+
+    var l1 = 150;
+    var l2 = 100;
+    var l3 = 75;
+
+    var x0 = 400;
+    var y0 = 400;
+
+    var penOn = false;
+    var redOn= true;
+    var blueOn= false;
+
+    var myObj = { theta1 : theta1, theta2: theta2, theta3: theta3};
+    var canvas = document.getElementById("Canvas");
+    var ctx = canvas.getContext("2d");
+
+    var draw_buffer = new Array(canvas.width*canvas.height);
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.strokeStyle="black";
+      ctx.setLineDash([4, 2]);
+      ctx.shadowOffsetX = 5;
+      ctx.shadowOffsetY = 10;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = 'grey';
+      ctx.beginPath();
+      ctx.moveTo(x0, y0);
+
+      x1 = x0 + (Math.cos(theta1) * l1)
+      y1 = y0 + (Math.sin(theta1) * l1);
+      ctx.lineTo(x1, y1);
+      ctx.stroke();
+      ctx.moveTo(x1, y1);
+
+      x2 = x1 + (Math.cos(theta1+theta2) * l2)
+      y2 = y1 + (Math.sin(theta1+theta2) * l2);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+      ctx.moveTo(x2, y2);
+
+      x3 = x2 + (Math.cos(theta1+theta2+theta3) * l3)
+      y3 = y2 + (Math.sin(theta1+theta2+theta3) * l3);
+      ctx.lineTo(x3, y3);
+      ctx.stroke();
+
+      if (penOn) {
+        for (var i = -5; i <= 5; i++) {
+          for (var j = -5; j <=5; j++) {
+            var index = Math.floor((Math.floor(x3)+i) + canvas.width*(Math.floor(y3)+j));
+            draw_buffer[index] = 1;
+          }
+        }
+      }
+      var x=255;
+      var y=128;
+      var z=238;
+
+      ctx.fillStyle  = "rgba("+255+","+128+","+128+","+(128)+")";
+      ctx.shadowColor = "transparent";
+      if(redOn){
+        ctx.fillStyle = "red";
+
+      }
+      else{
+        ctx.fillStyle = "blue";
+
+      }
+      for (var i = 0; i < draw_buffer.length; i++) {
+        var x = i % canvas.width;
+        var y = i / canvas.width;
+
+        if (draw_buffer[i] == 1)
+          ctx.fillRect( x, y, 1, 1 );
+        }
+
+      }
+
+      function toggleRed(){
+        redOn=true;
+        draw();
+      }
+      function toggleBlue(){
+        redOn=false;
+        draw();
+      }
+
+      function togglePen() {
+
+        penOn = !penOn;
+
+        if (penOn) {
+          for (var i = -5; i <= 5; i++) {
+            for (var j = -5; j <=5; j++) {
+              var index = Math.floor((Math.floor(x3)+i) + canvas.width*(Math.floor(y3)+j));
+              draw_buffer[index] = 1;
+            }
+          }
+        }
+
+        draw();
+
+      }
+
+/*
+  //initial start of drawing
+  //1st arm
+  ctx.beginPath();
+  // ctx.ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise)
+
+  ctx.ellipse(400, 350, 50, 75, theta1 * Math.PI/180, 0, 2 * Math.PI);
+  ctx.stroke();
+  ctx.moveTo(0, 200);
+  ctx.stroke();
+  ctx.closePath();
+  //2nd arm
+   ctx.beginPath();
+  ctx.ellipse(400, 250, 50, 75, theta2 * Math.PI/180, 0, 2 * Math.PI);
+  ctx.stroke();
+  ctx.moveTo(0, 200);
+  ctx.stroke();
+  ctx.closePath();
+  // 3rd arm
+  ctx.beginPath();
+  ctx.ellipse(400, 150, 50, 75, theta3 * Math.PI/180, 0, 2 * Math.PI);
+  ctx.stroke();
+  ctx.moveTo(0, 200);
+  ctx.stroke();
+  ctx.closePath();
+  */
+
+  // Rotation when clicked functions
+  // each rotation is different and the canvas is cleared before redrawing
+  // When it redraws the only changed seen are the ones that are made, the previous state of the others are kept.
+  
+  //rotate function for 1st arm
+  function rotationAdd1(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    theta1= theta1+1;
+    myObj = { theta1 : theta1, theta2: theta2, theta3: theta3};
+    console.log(myObj )
+    //draw1(theta1);
+    //draw2(theta2);
+    //draw3(theta3);
+
+  }
+  function rotationMinus1(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    theta1= theta1-1;
+    myObj = { theta1 : theta1, theta2: theta2, theta3: theta3};
+    console.log(myObj )
+    //draw1(theta1);
+    //draw1(theta1);
+    //draw2(theta2);
+    //draw3(theta3);
+
+  }
+  //rotate function for 2nd arm
+  function rotationAdd2(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    theta2= theta2+1;
+    myObj = { theta1 : theta1, theta2: theta2, theta3: theta3};
+    console.log(myObj )
+    //draw1(theta1);
+    //draw2(theta2);
+    //draw3(theta3);
+
+  }
+  function rotationMinus2(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    theta2= theta2-1;
+    myObj = { theta1 : theta1, theta2: theta2, theta3: theta3};
+    console.log(myObj )
+    //draw1(theta1);
+    //draw1(theta1);
+    //draw2(theta2);
+    //draw3(theta3);
+
+  }
+  //rotate function for 3rd arm
+
+  function rotationAdd3(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    theta3= theta3+1;
+    myObj = { theta1 : theta1, theta2: theta2, theta3: theta3};
+    console.log(myObj )
+    //draw1(theta1);
+    //draw2(theta2);
+    //draw3(theta3);
+
+  }
+  function rotationMinus3(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    theta3= theta3-1;
+    myObj = { theta1 : theta1, theta2: theta2, theta3: theta3};
+    console.log(myObj )
+    //draw1(theta1);
+    //draw1(theta1);
+    //draw2(theta2);
+    //draw3(theta3);
+
+  }
+
+  //drawing of first arm when changed
+  //each function only changes the value for the button that was cliked
+  //these functions are called for each button which are the rotationAdd and rotationMinus
+
+  function draw1(x){
+    ctx.beginPath();
+    ctx.ellipse(400, 350, 50, 75, x * Math.PI/180, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.moveTo(0, 200);
+    ctx.stroke();
+    ctx.closePath();
+  }
+
+  function draw2(x){
+    ctx.beginPath();
+    ctx.ellipse(400, 250, 50, 75, theta2 * Math.PI/180, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.moveTo(0, 200);
+    ctx.stroke();
+    ctx.closePath();
+  }
+
+  function draw3(x){
+    ctx.beginPath();
+    ctx.ellipse(400, 150, 50, 75, theta3 * Math.PI/180, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.moveTo(0, 200);
+    ctx.stroke();
+    ctx.closePath();
+    console.log(myObj )
+  }
+
+</script>
+<style>
+.button {
+  /*    background-color: #4CAF50; /* Green */
+  */    border: none;
+  /*color: red;*/
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 10px
+  margin: 2px 1px;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 2px 5px;
+}
+.buttonRed {color: red;}
+.buttonBlue {color: blue;}
+</style>
+
+<div id="control-area">
+  <table id="controls">
+    <tr>
+      <td><button class="button" onClick="(function(){theta1+=increment;draw();})()">1: clockwise</button></td>
+      <td><button class="button"onClick="(function(){theta1-=increment;draw();})()">1: counter-clockwise</button></td>
+    </tr>
+    <tr>
+      <td><button class="button"onClick="(function(){theta2+=increment;draw();})()">2: clockwise</button></td>
+      <td><button class="button"onClick="(function(){theta2-=increment;draw();})()">2: counter-clockwise</button></td>
+    </tr>
+    <tr>
+      <td><button class="button"onClick="(function(){theta3+=increment;draw();})()">3: clockwise</button></td>
+      <td><button class="button"onClick="(function(){theta3-=increment;draw();})()">3: counter-clockwise</button></td>
+    </tr>
+    <tr>
+      <td><button class="button" onClick="togglePen()" >Toggle Draw</button></td>
+    </tr>
+    <tr>
+      <td><button class="button buttonRed" onClick="toggleRed()" >Red</button></td>
+      <td><button class="button buttonBlue" onClick="toggleBlue()" >Blue</button></td>
+
+    </tr>
+  </table>
+
+</div>
+
+<script src="js/scripts.js"></script>
+</body>
+</html>
